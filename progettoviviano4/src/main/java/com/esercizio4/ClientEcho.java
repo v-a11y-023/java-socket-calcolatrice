@@ -11,30 +11,35 @@ public class ClientEcho {
        int porta = 5000;
        String host = "localhost";
 
-       Scanner tastiera = null;
-       PrintWriter out = null;
-       BufferedReader in = null;
+        try(Scanner scanner = new Scanner(System.in)) {
+            System.out.println("Benvenuto/a nella calcolatrice!");
+            
+            System.out.print("Inserire il primo numero: "); //legge i dati inseriti dalla tastiera dell'utente con scanner
+            double num1 = scanner.nextDouble();
 
-        try(Socket clientSocket = new Socket(host, porta)) {
+            System.out.print("Inserire l'operatore (+, -, *, /): ");
+            String operatore = scanner.next();
 
-            tastiera = new Scanner(System.in); //collegamento alla tastiera
-            out = new PrintWriter(clientSocket.getOutputStream(), true); //collega il canale di output al server. True serve per l'invio immediato
-            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream())); //prende i dati dal server, li converte in testo e li organizza in modo da essere letti una riga per volta
+            System.out.print("Inserire il secondo numero: ");
+            double num2 = scanner.nextDouble();
 
-            System.out.println("Connessione stabilita! Connesso al server " + host + ":" + porta);
+            String mexDaInviare = num1 + " " + operatore + " " + num2; //si uniscono le tre variabili in unica stringa separata da degli spazi
 
-            System.out.println("Digitare una frase da inviare al server: ");
-            String testoUtente = tastiera.nextLine(); //il programma si ferma e aspetta che l'utente scriva qualcosa e prema invio
-            out.println(testoUtente); //invia la frase scritta al server
-            String rispostaServer = in.readLine(); //il programma sta in attesa fino a che il server non risponde
-            System.out.println("Risposta ricevuta dal server: " + rispostaServer);
+            // Connessione al server
+            try (Socket socket = new Socket(host, porta); //ci si connette al server tramite la classe Socket (ovviamente si passano ip e porta)
+                 PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
+                 BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
-            out.close();
-            tastiera.close();
-            in.close();
+                System.out.println("Connessione al server stabilita...");
 
-        } catch (Exception e) {
-            System.err.println("Errore: " + e.getMessage());
-        } 
+                output.println(mexDaInviare); //si inviano i dati al server
+
+                String risposta = input.readLine(); //legge la risposta del server e la stampa
+                System.out.println("Risposta dal server: " + risposta);
+
+            } catch (Exception e) {
+                System.out.println("Impossibile connettersi al server! Assicurarsi che sia avviato");
+            }
+        }
     }
 }

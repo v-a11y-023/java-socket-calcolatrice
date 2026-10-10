@@ -17,16 +17,16 @@ public class ServerEcho {
                 Socket socket = serverSocket.accept(); //mette il server in pausa fino a che un client non tenta di connettersi
                 System.out.println("Client connesso: " + socket.getInetAddress()); //quando si connette restituisce un oggetto Socket per comunicare e stampa il suo indirizzo IP
 
-                BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream())); //in questo modo si creano i canali di comunicazione col client
-                PrintWriter output = new PrintWriter(socket.getOutputStream(), true); //input serve per leggere ciò che il client invia, mentre output serve per rispondergli. Mettendo true come parametro fa in modo che i dati vengono inviati subito
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream())); //in questo modo si creano i canali di comunicazione col client
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true); //in serve per leggere ciò che il client invia, mentre out serve per rispondergli. Mettendo true come parametro fa in modo che i dati vengono inviati subito
 
-                String richiesta = input.readLine(); //legge la stringa inviata dal client
+                String richiesta = in.readLine(); //legge la stringa inviata dal client
                 if (richiesta != null) {
                     System.out.println("Ricevuto: " + richiesta); //se essa non è vuota viene stampata
                     
                     String risposta = calcolami(richiesta); //qui invece viene richiamata la funzione per svolgere i calcoli
                     
-                    output.println(risposta); //infine il risultato viene inviato al client
+                    out.println(risposta); //infine il risultato viene inviato al client
                 }
                 socket.close(); //si chiude la connessione con il client corrente
                 System.out.println("Connessione chiusa con il client.\n"); //e come ultima cosa torna all'inizio del ciclo while in attesa del prossimo client
@@ -36,7 +36,7 @@ public class ServerEcho {
         }  
     }
 
-    
+
     private static String calcolami(String richiesta) {
         try {
             String[] parti = richiesta.split(" "); //divide la stringa ricevuta in pezzi separati da dagli spazi usando grazie a split
@@ -65,7 +65,7 @@ public class ServerEcho {
                     ris = n1 / n2;
                     break;
                 default: //vengono gestiti gli operatori non validi
-                    return "Errore: Operatore non riconosciuto ('" + operatore + "'). Usa +, -, *, /";
+                    return "Errore: Operatore non riconosciuto ('" + operatore + "'). Devi usare +, -, *, /";
             }
             return "Risultato: " + ris; //infine viene restituita la stringa con il risultato
         } catch (NumberFormatException e) { //intercetta gli errori (nel caso in cui l'utente scriva per sbaglio lettere al posto dei numeri, anche se teoricamente è difficile che avvenga)
