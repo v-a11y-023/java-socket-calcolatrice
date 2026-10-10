@@ -8,7 +8,7 @@ import java.io.PrintWriter; //serve per inviare il testo al server
 
 public class ClientEcho {
     public static void main(String[] args) {
-       int porta = 5000;
+       int porta = 12345;
        String host = "localhost";
 
         try(Scanner scanner = new Scanner(System.in)) {
