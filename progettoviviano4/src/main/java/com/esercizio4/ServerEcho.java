@@ -36,41 +36,40 @@ public class ServerEcho {
         }  
     }
 
+    
     private static String calcolami(String richiesta) {
         try {
             String[] parti = richiesta.split(" "); //divide la stringa ricevuta in pezzi separati da dagli spazi usando grazie a split
             if (parti.length != 3) { //se i pezzi non sono esattamente 3 restituisce un messaggio d'errore
                 return "Errore: il formato non è valido! Devi scrivere in ordine il primo numero, l'operatore e il secondo numero!";
             }
-
-            double num1 = Double.parseDouble(parti[0]); //converte il testo in un numero decimale*
+            double n1 = Double.parseDouble(parti[0]); //converte il testo in un numero decimale*
             String operatore = parti[1]; //l'operatore centrale viene salvato in una stringa
-            double num2 = Double.parseDouble(parti[2]); //*
-            double risultato;
+            double n2 = Double.parseDouble(parti[2]); //*
+            double ris;
 
             switch (operatore) { //switch che controlla l'operatore scelto
                 case "+":
-                    risultato = num1 + num2;
+                    ris = n1 + n2;
                     break;
                 case "-":
-                    risultato = num1 - num2;
+                    ris = n1 - n2;
                     break;
                 case "*":
-                    risultato = num1 * num2;
+                    ris = n1 * n2;
                     break;
                 case "/":
-                    if (num2 == 0) { //è incluso un controllo di sicurezza per impedire la divisione per zero
+                    if (n2 == 0) { //è incluso un controllo di sicurezza per impedire la divisione per zero
                         return "Errore: Impossibile dividere per zero!";
                     }
-                    risultato = num1 / num2;
+                    ris = n1 / n2;
                     break;
                 default: //vengono gestiti gli operatori non validi
                     return "Errore: Operatore non riconosciuto ('" + operatore + "'). Usa +, -, *, /";
             }
-            return "Risultato: " + risultato; //infine viene restituita la stringa con il risultato
+            return "Risultato: " + ris; //infine viene restituita la stringa con il risultato
         } catch (NumberFormatException e) { //intercetta gli errori (nel caso in cui l'utente scriva per sbaglio lettere al posto dei numeri, anche se teoricamente è difficile che avvenga)
             return "Errore: I numeri inseriti non sono validi.";
         }
-    }
-    
+    } 
 }
