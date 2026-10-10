@@ -25,7 +25,6 @@ public class ClientEcho {
 
             String mexDaInviare = num1 + " " + operatore + " " + num2; //si uniscono le tre variabili in unica stringa separata da degli spazi
 
-            // Connessione al server
             try (Socket socket = new Socket(host, porta); //ci si connette al server tramite la classe Socket (ovviamente si passano ip e porta)
                  PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
                  BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
