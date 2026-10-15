@@ -13,31 +13,48 @@ public class ClientEcho {
 
         try(Scanner scanner = new Scanner(System.in)) {
             System.out.println("Benvenuto/a nella calcolatrice!");
+            System.out.println("Puoi effettuare molteplici calcoli senza dover chiudere la comunicazione");
+            System.out.println("Scrivi 'esci' quando inserisci il primo numero per terminare");
             
-            System.out.print("Inserire il primo numero: "); //legge i dati inseriti dalla tastiera dell'utente con scanner
-            double num1 = scanner.nextDouble();
+            while(true) {
+                System.out.print("Inserire il primo numero: ");
+                String inputUtente = scanner.next();
 
-            System.out.print("Inserire l'operatore (+, -, *, /): ");
-            String operatore = scanner.next();
+                if (inputUtente.equalsIgnoreCase("esci")) { //viene controllato se l'utente vuole uscire
+                    System.out.println("Grazie per aver usato la calcolatrice! Addio!");
+                    break;
+                }
 
-            System.out.print("Inserire il secondo numero: ");
-            double num2 = scanner.nextDouble();
+                double n1;
+                try {
+                    n1 = Double.parseDouble(inputUtente); //si converte la string in numero
+                } catch (NumberFormatException e) {
+                    System.out.println("Errore: devi inserire un numero valido o la parola 'esci'! Riprovare!");
+                    continue; //con continue si può ritornare all'inizio del ciclo per richiedere i dati
+                }
 
-            String mexDaInviare = num1 + " " + operatore + " " + num2; //si uniscono le tre variabili in unica stringa separata da degli spazi
+                System.out.print("Inserire l'operatore (+, -, *, /): ");
+                String operatore = scanner.next();
 
-            try (Socket socket = new Socket(host, porta); //ci si connette al server tramite la classe Socket (ovviamente si passano ip e porta)
-                 PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
-                 BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+                System.out.print("Inserire il secondo numero: ");
+                if (!scanner.hasNextDouble()) {
+                    System.out.println("Errore: Il secondo valore deve essere un numero! Riprova...");
+                    scanner.next(); //svuota l'input errato rimasto nello scanner
+                    continue;
+                }
+                double n2 = scanner.nextDouble();
 
-                System.out.println("Connessione al server stabilita...");
+                String mexDaInviare = n1 + " " + operatore + " " + n2;
 
-                output.println(mexDaInviare); //si inviano i dati al server
-
-                String risposta = input.readLine(); //legge la risposta del server e la stampa
-                System.out.println("Risposta dal server: " + risposta);
-
-            } catch (Exception e) {
-                System.out.println("Impossibile connettersi al server! Assicurarsi che sia avviato");
+                try (Socket socket = new Socket(host, porta);
+                    PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
+                    BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+                        output.println(mexDaInviare);
+                        String risposta = input.readLine();
+                        System.out.println("Risposta: " + risposta);
+                } catch (Exception e) {
+                    System.out.println("Impossibile connettersi al server! Assicurarsi che sia avviato!");
+                }
             }
         }
     }
